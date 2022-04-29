@@ -16,10 +16,10 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
     "data": `str=${searchValue}&pageidx=${pageIndex}`
   })
     .then(value => value.data)
-    .then(data => usefulbookinfo(data))
+    .then(data => booksinfo(data))
     .then(value => res.json(value))
 
-  function usefulbookinfo(data) {
+  function booksinfo(data) {
     return data.map(item => {
       const dict = {}
       dict.name = item.C200A
@@ -35,7 +35,6 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
 
 router.get("/detail/:bookID", (req, res) => {
   const bookID = req.params.bookID
-  console.log("ss")
   axios({
     "method": "GET",
     "url": "http://opac.ahu.edu.cn/Mobile/sjxq",
@@ -44,23 +43,27 @@ router.get("/detail/:bookID", (req, res) => {
     }
   })
     .then(value => value.data)
-    .then(html => {
-      bookinfo = {}
-      bookinfo.name = /<h4>(.*)<\/h4>/.exec(html)[1]
-      bookinfo.intro = /<div class="intro">(.*)<\/div>/.exec(html)[1]
-      bookinfo.collections = html.match(/<ul class="li_right">(.*?)<\/ul>/sg)
-        .map(item => {
-          const dict = {}
-          const infos = item.match(/<li>(.*?)<\/li>/g)
-          dict["索书号"] = infos[0].slice(4, -5)
-          dict["馆藏地"] = infos[3].slice(4, -5)
-          dict["书刊状态"] = infos[5].slice(4, -5)
-          return dict
-        })
-      return bookinfo
-    })
+    .then(html => abookinfo(html))
     .then(value => res.json(value))
+
+
+  function abookinfo(html) {
+    const bookinfo = {}
+    bookinfo.name = /<h4>(.*)<\/h4>/.exec(html)[1]
+    bookinfo.intro = /<div class="intro">(.*)<\/div>/.exec(html)[1]
+    bookinfo.collections = html.match(/<ul class="li_right">(.*?)<\/ul>/sg)
+      .map(item => collectinfo(item))
+    return bookinfo
+
+    function collectinfo(item) {
+      const dict = {}
+      const infos = item.match(/<li>(.*?)<\/li>/g)
+      dict["索书号"] = infos[0].slice(4, -5)
+      dict["馆藏地"] = infos[3].slice(4, -5)
+      dict["书刊状态"] = infos[5].slice(4, -5)
+      return dict
+    }
+  }
 })
 
 module.exports = router
-
