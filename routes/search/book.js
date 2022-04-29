@@ -32,5 +32,18 @@ router.get("/:searchValue/:pageIndex", (req, res) => {
   }
 })
 
+
+router.get("/detail/:bookID", (req, res) => {
+  const bookID = req.params.bookID
+  axios({
+    "method": "GET",
+    "url": "http://opac.ahu.edu.cn/Mobile/sjxq",
+    "params": {
+      "refcode": bookID
+    }
+  })
+    .then(value => console.log(value))
+})
+
 module.exports = router
 
