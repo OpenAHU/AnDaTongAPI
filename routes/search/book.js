@@ -43,7 +43,23 @@ router.get("/detail/:bookID", (req, res) => {
       "refcode": bookID
     }
   })
-    .then(value => console.log(value))
+    .then(value => value.data)
+    .then(html => {
+      bookinfo = {}
+      bookinfo.name = /<h4>(.*)<\/h4>/.exec(html)[1]
+      bookinfo.intro = /<div class="intro">(.*)<\/div>/.exec(html)[1]
+      bookinfo.collections = html.match(/<ul class="li_right">(.*?)<\/ul>/sg)
+        .map(item => {
+          const dict = {}
+          const infos = item.match(/<li>(.*?)<\/li>/g)
+          dict["索书号"] = infos[0].slice(4, -5)
+          dict["馆藏地"] = infos[3].slice(4, -5)
+          dict["书刊状态"] = infos[5].slice(4, -5)
+          return dict
+        })
+      return bookinfo
+    })
+    .then(value => res.json(value))
 })
 
 module.exports = router
