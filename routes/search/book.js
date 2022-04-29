@@ -4,7 +4,7 @@ const axios = require('axios')
 const router = express.Router()
 
 
-router.get("/:searchValue/:pageIndex", (req, res) => {
+router.get("/books/:searchValue/:pageIndex", (req, res) => {
   const searchValue = req.params.searchValue
   const pageIndex = req.params.pageIndex
   axios({
@@ -35,6 +35,7 @@ router.get("/:searchValue/:pageIndex", (req, res) => {
 
 router.get("/detail/:bookID", (req, res) => {
   const bookID = req.params.bookID
+  console.log("ss")
   axios({
     "method": "GET",
     "url": "http://opac.ahu.edu.cn/Mobile/sjxq",
