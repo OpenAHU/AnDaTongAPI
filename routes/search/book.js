@@ -50,6 +50,7 @@ router.get("/detail/:bookID", (req, res) => {
   function abookinfo(html) {
     const bookinfo = {}
     bookinfo.name = /<h4>(.*)<\/h4>/.exec(html)[1]
+    bookinfo.cover = /<img src="(.*)">/.exec(html)[1]
     bookinfo.intro = /<div class="intro">(.*)<\/div>/.exec(html)[1]
     bookinfo.collections = html.match(/<ul class="li_right">(.*?)<\/ul>/sg)
       .map(item => collectinfo(item))
