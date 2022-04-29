@@ -27,6 +27,7 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
       dict.year = item.C210D
       dict.publish = item.C210C
       dict.id = item.REFCODE
+      dict.isbn = item.CISBN
       return dict
     })
   }
