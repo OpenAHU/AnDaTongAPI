@@ -33,7 +33,6 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
       dict.id = item.REFCODE
       dict.isbn = item.CISBN
       dict.imgurl = await db.get(dict.isbn)
-      console.log(dict.imgurl)
       axios({
         "method": "GET",
         "url": "http://douban.com/isbn/"+dict.isbn,
