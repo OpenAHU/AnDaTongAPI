@@ -41,7 +41,7 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
         .then(data =>
           data.match(/<meta property="og:image" content="(.*)" \/>/)[1]
         )
-        .then(value => dict.imageURL = value)
+        .then(value => dict["imageURL"] = value)
       return dict
     })
   }
