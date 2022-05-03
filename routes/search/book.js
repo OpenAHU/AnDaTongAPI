@@ -2,6 +2,8 @@
 const express = require("express")
 const axios = require('axios')
 const router = express.Router()
+const Database = require("@replit/database")
+const db = new Database()
 
 
 router.get("/books/:searchValue/:pageIndex", (req, res) => {
@@ -16,11 +18,11 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
     "data": `str=${searchValue}&pageidx=${pageIndex}`
   })
     .then(value => value.data)
-    .then(data => booksinfo(data))
+    .then(async data => await booksinfo(data))
     .then(value => res.json(value))
 
-  function booksinfo(data) {
-    return data.map(item => {
+  async function booksinfo(data) {
+    return await Promise.all( data.map(async item => {
       const dict = {}
       dict.name = item.C200A
       dict.author = item.C200F
@@ -30,21 +32,22 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
       dict.available = item.C1
       dict.id = item.REFCODE
       dict.isbn = item.CISBN
+      dict.imgurl = await db.get(dict.isbn)
+      console.log(dict.imgurl)
       axios({
         "method": "GET",
-        "url": "http://douban.com/isbn/7101003044/",
+        "url": "http://douban.com/isbn/"+dict.isbn,
         "headers": {
           "Cookie": "bid=m-J05VnJJQk; viewed=\"1077847\""
         }
       })
         .then(res => res.data)
         .then(data =>
-          data.match(/<meta property="og:image" content="(.*)" \/>/)[1]
+          db.set(dict.isbn, data.match(/<meta property="og:image" content="(.*)" \/>/)[1])
         )
-        .then(value => dict["imageURL"] = value)
       return dict
     })
-  }
+  )}
 })
 
 
