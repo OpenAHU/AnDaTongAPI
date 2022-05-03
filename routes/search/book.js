@@ -26,8 +26,22 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
       dict.author = item.C200F
       dict.year = item.C210D
       dict.publish = item.C210C
+      dict.total = item.C
+      dict.available = item.C1
       dict.id = item.REFCODE
       dict.isbn = item.CISBN
+      axios({
+        "method": "GET",
+        "url": "http://douban.com/isbn/7101003044/",
+        "headers": {
+          "Cookie": "bid=m-J05VnJJQk; viewed=\"1077847\""
+        }
+      })
+        .then(res => res.data)
+        .then(data =>
+          data.match(/<meta property="og:image" content="(.*)" \/>/)[1]
+        )
+        .then(value => dict.imageURL = value)
       return dict
     })
   }
