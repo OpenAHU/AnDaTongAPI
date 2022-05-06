@@ -20,6 +20,7 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
     .then(value => value.data)
     .then(async data => await booksinfo(data))
     .then(value => res.json(value))
+    .catch(error => console.log(error))
 
   async function booksinfo(data) {
     return await Promise.all(data.map(async item => {
@@ -48,7 +49,8 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
             dict.imgurl = zzimgurl.length ? zzimgurl[1] : null
             db.set(dict.isbn, dict.imgurl)
           }
-          )
+        )
+          .catch(error => console.log(error))
       }
       return dict
     })
@@ -69,6 +71,7 @@ router.get("/detail/:bookID", (req, res) => {
     .then(value => value.data)
     .then(html => abookinfo(html))
     .then(value => res.json(value))
+    .catch(error => console.log(error))
 
 
   function abookinfo(html) {
