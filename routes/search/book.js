@@ -22,7 +22,7 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
     .then(value => res.json(value))
 
   async function booksinfo(data) {
-    return await Promise.all( data.map(async item => {
+    return await Promise.all(data.map(async item => {
       const dict = {}
       dict.name = item.C200A
       dict.author = item.C200F
@@ -33,20 +33,27 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
       dict.id = item.REFCODE
       dict.isbn = item.CISBN
       dict.imgurl = await db.get(dict.isbn)
-      axios({
-        "method": "GET",
-        "url": "http://douban.com/isbn/"+dict.isbn,
-        "headers": {
-          "Cookie": "bid=m-J05VnJJQk; viewed=\"1077847\""
-        }
-      })
-        .then(res => res.data)
-        .then(data =>
-          db.set(dict.isbn, data.match(/<meta property="og:image" content="(.*)" \/>/)[1])
-        )
+      if (!dict.imgurl) {
+        await axios({
+          "method": "GET",
+          "url": "http://douban.com/isbn/" + dict.isbn,
+          "headers": {
+            "Cookie": "bid=m-J05VnJJQk; viewed=\"1077847\""
+          }
+        })
+          .then(res => res.data)
+          .then(data =>
+          {
+            zzimgurl = data.match(/<meta property="og:image" content="(.*)" \/>/)
+            dict.imgurl = zzimgurl.length ? zzimgurl[1] : null
+            db.set(dict.isbn, dict.imgurl)
+          }
+          )
+      }
       return dict
     })
-  )}
+    )
+  }
 })
 
 
