@@ -1,7 +1,6 @@
 // 创建路由对象，并编写路由，然后导出
 const express = require("express")
 const axios = require('axios')
-const LZString = require('lz-string')
 const router = express.Router()
 const Database = require("@replit/database")
 const db = new Database()
