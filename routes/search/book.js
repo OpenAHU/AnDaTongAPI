@@ -1,6 +1,7 @@
 // 创建路由对象，并编写路由，然后导出
 const express = require("express")
 const axios = require('axios')
+const LZString = require('lz-string')
 const router = express.Router()
 const Database = require("@replit/database")
 const db = new Database()
@@ -25,9 +26,18 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
 
   function whattheirsearch(searchValue) {
     db.get("books").then(books => {
-      return books ? books.push(searchValue) : [searchValue]
+      if(books){
+        books=JSON.parse(books)
+        books.push(searchValue)
+      }
+      else{
+        books=[searchValue]
+      }
+      return books
     })
+      .then(books=>JSON.stringify(books))
       .then(books => { db.set("books", books) })
+    .catch(error=>console.log(error))
   }
 
   async function booksinfo(data) {
