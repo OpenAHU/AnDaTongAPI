@@ -83,9 +83,4 @@ router.get("/detail/:bookID", (req, res) => {
   }
 })
 
-router.get("/cover/:isbn", (req, res) => {
-  const isbn = req.params.isbn
-  //https://mlog.club/article/2032024
-})
-
 module.exports = router
