@@ -8,6 +8,7 @@ const db = new Database()
 
 router.get("/books/:searchValue/:pageIndex", (req, res) => {
   const searchValue = req.params.searchValue
+  whattheirsearch(searchValue)
   const pageIndex = req.params.pageIndex
   axios({
     "method": "POST",
@@ -21,6 +22,13 @@ router.get("/books/:searchValue/:pageIndex", (req, res) => {
     .then(async data => await booksinfo(data))
     .then(value => res.json(value))
     .catch(error => console.log(error))
+
+  function whattheirsearch(searchValue) {
+    db.get("books").then(books => {
+      return books ? books.push(searchValue) : [searchValue]
+    })
+      .then(books => { db.set("books", books) })
+  }
 
   async function booksinfo(data) {
     return await Promise.all(data.map(async item => {
