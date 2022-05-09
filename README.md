@@ -7,7 +7,9 @@
 
 以下接口不做说明，均使用GET方法。
 
-## 图书馆查询接口
+## 功能接口
+
+### 图书馆查询接口
 ```
 https://api.never2.top/search/book/books/:searchValue/:pageIndex
 ```
@@ -24,7 +26,7 @@ axios({
 })
 ```
 
-## 书籍详情
+### 书籍详情
 ```javascript
 https://api.never2.top/search/book/detail/:bookID
 ```
@@ -40,4 +42,10 @@ axios({
 	"method": "GET",
 	"url": "https://api.never2.top/search/book/detail/1601560"
 })
-```)
+```
+
+## 统计接口
+
+```javascript
+https://api.never2.top/collect/searchvalue
+```
